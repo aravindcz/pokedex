@@ -7,9 +7,6 @@ import (
 	"net/http"
 )
 
-var (
-	config Config
-)
 
 	
 type Response struct {
@@ -27,7 +24,7 @@ type Config struct{
 	Next string
 }
 
-func GetPokeApiResult(command string) *Response{
+func GetPokeApiResult(command string,config *Config) *Response{
 
 	var request string
 	var responseBodyUnmarshalled Response
@@ -40,7 +37,7 @@ func GetPokeApiResult(command string) *Response{
 	if command == "map"{
 		request = config.Next
 	}else{
-		if config.Previous == "" || config.Previous == null{
+		if config.Previous == null || config.Previous == ""{
 			return nil
 		}
 		request = config.Previous

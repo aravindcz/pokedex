@@ -2,16 +2,23 @@ package main
 
 import (
 	"fmt"
-	"pokeapi"
+	"github.com/aravindcz/pokedex/pokeapi"
 )
 
 
 var (
 	input string
-	response pokeapi.Response
+	config *pokeapi.Config
+	response *pokeapi.Response
 )
 
 func main() {
+
+	config := &pokeapi.Config{
+		Next: ""
+		Previous: ""
+	}
+
 
 	for{
 		fmt.Print("pokedex > ")
@@ -26,7 +33,7 @@ func main() {
 
 		}else if input== "map" || input == "mapb"{
 			 response  = pokeapi.GetPokeApiResult(input)
-			 fmt.Println(string(response))
+			 fmt.Println(*response)
 		}else{
 			break
 		}
