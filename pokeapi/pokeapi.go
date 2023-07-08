@@ -1,8 +1,8 @@
 package pokeapi
 
 import (
+	"errors"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -24,21 +24,22 @@ type Config struct{
 	Next string
 }
 
-func GetPokeApiResult(command string,config *Config) *Response{
+func GetPokeApiResult(command string,config *Config) (*Response,error){
 
 	var request string
 	var responseBodyUnmarshalled Response
 
 
-	if config.Previous == ""{
+	if config.Previous == "" && config.Next == ""{
 		config.Next = "https://pokeapi.co/api/v2/location/?offset=0&limit=20"
 	}
 
 	if command == "map"{
 		request = config.Next
 	}else{
-		if config.Previous == null || config.Previous == ""{
-			return nil
+		if config.Previous == "null" || config.Previous == ""{
+			
+			return nil,errors.New("No previous link to follow")
 		}
 		request = config.Previous
 	}
@@ -47,26 +48,32 @@ func GetPokeApiResult(command string,config *Config) *Response{
 
 
 	if err != nil {
-		fmt.Println("Some error occured")
-		return nil
+		
+		return nil,errors.New("Network error")
 	}
 
 	responseBody,err := io.ReadAll(response.Body)
 
 	if err!=nil{
-		return nil
+		
+		return nil,errors.New("Parse error")
 	}
 
 	err = json.Unmarshal(responseBody,&responseBodyUnmarshalled)
 
 	if err != nil{
-		return nil
+		
+		return nil,errors.New("Unmarshal error")
 	}
 
+	
+	
 	config.Next = responseBodyUnmarshalled.Next
 	config.Previous = responseBodyUnmarshalled.Previous
 
-	return &responseBodyUnmarshalled
+	
+
+	return &responseBodyUnmarshalled,nil
 
 }
 

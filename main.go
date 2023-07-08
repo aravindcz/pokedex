@@ -10,13 +10,14 @@ var (
 	input string
 	config *pokeapi.Config
 	response *pokeapi.Response
+	err error
 )
 
 func main() {
 
-	config := &pokeapi.Config{
-		Next: ""
-		Previous: ""
+	config := pokeapi.Config{
+		Next: "",
+		Previous: "",
 	}
 
 
@@ -32,8 +33,15 @@ func main() {
 			exit: exits the program`)
 
 		}else if input== "map" || input == "mapb"{
-			 response  = pokeapi.GetPokeApiResult(input)
-			 fmt.Println(*response)
+			 response,err  = pokeapi.GetPokeApiResult(input,&config)
+			 fmt.Println(config.Next)
+			 fmt.Println(config.Previous)
+			 if err!= nil{
+				fmt.Println(err)
+			 }else{
+				// fmt.Println(*response)
+			 }
+			 
 		}else{
 			break
 		}
